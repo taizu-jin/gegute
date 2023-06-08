@@ -1,8 +1,9 @@
-use chrono::DateTime;
+use chrono::{DateTime, Utc};
 use clap::Parser;
 use gegute::{
     cli::{Cli, Commands, GetFormat, SetFormat},
     clock::Clock,
+    ntp::check_time,
 };
 use std::{eprintln, println};
 
@@ -42,6 +43,16 @@ fn main() {
                     Some(_) => eprintln!("Unable to set the time: {:?}", os_error),
                     None => (),
                 }
+            }
+            Commands::Ntp => {
+                let offset = check_time().unwrap() as isize;
+
+                let adjust_ms = offset.signum() * offset.abs().min(200) / 5;
+                let adjust_ms = chrono::Duration::milliseconds(adjust_ms as i64);
+
+                let now: DateTime<Utc> = Utc::now() + adjust_ms;
+
+                Clock::set(now);
             }
         },
         None => println!("{}", Clock::get().to_rfc3339()),

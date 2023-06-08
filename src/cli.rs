@@ -16,6 +16,8 @@ pub enum Commands {
     Get(GetArgs),
     /// (Aspirationally) sets the time.
     Set(SetArgs),
+    /// Resolve clock differences with Network Time Protocol (NTP)
+    Ntp,
 }
 
 #[derive(Args)]
