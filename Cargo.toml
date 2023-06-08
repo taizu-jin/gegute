@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 chrono = "0.4"
 clap = { version = "4", features = ["derive"] }
+byteorder = "1"
 
 [target.'cfg(not(windows))'.dependencies]
 libc = "0.2"
