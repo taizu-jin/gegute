@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use clap::{Args, Parser, Subcommand, ValueEnum};
 
 /// Gets and (aspirationally) sets the time.
@@ -19,19 +21,34 @@ pub enum Commands {
 #[derive(Args)]
 pub struct GetArgs {
     #[arg(short = 's', long = "use-standard", default_value = "rfc3339")]
-    pub standard: Timestamp,
+    pub standard: GetFormat,
 }
 
 #[derive(Args)]
 pub struct SetArgs {
-    #[arg(short = 's', long)]
-    standard: Timestamp,
-    datetime: String,
+    #[arg(short = 's', long = "use-standard", default_value = "rfc3339")]
+    pub standard: SetFormat,
+    pub datetime: String,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-pub enum Timestamp {
+pub enum GetFormat {
     Rfc2822,
     Rfc3339,
     Timestamp,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+pub enum SetFormat {
+    Rfc2822,
+    Rfc3339,
+}
+
+impl Display for SetFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SetFormat::Rfc3339 => write!(f, "rfc3339"),
+            SetFormat::Rfc2822 => write!(f, "rfc2822"),
+        }
+    }
 }
